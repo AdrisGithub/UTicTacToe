@@ -15,6 +15,7 @@ namespace UltimateTicTacToe {
         private char currentMove;
         private char[,] bigBoard;
         private int[] nextPos;
+        private bool ended;
         public MainWindow() {
             InitBoard();
             InitComp();
@@ -25,6 +26,7 @@ namespace UltimateTicTacToe {
             nextPos = new[] { -1, -1 };
             bigBoard = new char[3, 3];
             currentMove = '0';
+            ended = false;
         }
         private void InitBoard() {
             Board = new Cell[9, 9];
@@ -82,20 +84,50 @@ namespace UltimateTicTacToe {
         private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e) {
             var pos = e.GetPosition(sender as Grid);
             int x = (int)pos.X/100, y = (int)pos.Y/100;
-            if (!Board[x, y].IsSet() && IsValid(x/3,y/3)) {
+            if (!Board[x, y].IsSet() && IsValid(x/3,y/3) && !ended) {
                 changeCurrentMove();
                 DrawBlock(x,y,currentMove);
                 Board[x,y].SetOwner(currentMove);
+                CheckWinner(x/3,y/3);
                 nextPos[0] = x % 3;
                 nextPos[1] = y % 3;
             }
         }
 
-        private bool IsValid(int x,int y) {
-            if ((nextPos[0] == x && nextPos[1] == y)||nextPos[0]==-1) {
-                return true;
+        private void CheckWinner(int x ,int y) {
+            if (CheckRowsSmall() || CheckDiagonalsSmall() || CheckColumnsSmall()) {
+                bigBoard[x, y] = currentMove;
+                if (CheckRowsBig() || CheckDiagonalsBig() || CheckColumnsBig())
+                    ended = true;
             }
-            return false;
+        }
+
+        private bool CheckRowsBig() {
+            throw new NotImplementedException();
+        }
+
+        private bool CheckDiagonalsBig() {
+            throw new NotImplementedException();
+        }
+
+        private bool CheckColumnsBig() {
+            throw new NotImplementedException();
+        }
+
+        private bool CheckColumnsSmall() {
+            throw new NotImplementedException();
+        }
+
+        private bool CheckDiagonalsSmall() {
+            throw new NotImplementedException();
+        }
+
+        private bool CheckRowsSmall() {
+            throw new NotImplementedException();
+        }
+
+        private bool IsValid(int x,int y) {
+            return (nextPos[0] == x && nextPos[1] == y)||nextPos[0]==-1;
         }
 
         private void changeCurrentMove() {
