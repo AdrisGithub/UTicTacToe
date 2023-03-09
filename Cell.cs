@@ -5,14 +5,14 @@ namespace UltimateTicTacToe;
 public class Cell {
     private char Owner { get; set; }
 
-    private void SetOwner(char value) {
+    public void SetOwner(char value) {
         if (Owner == ' ') {
             Owner = value;
         }
     }
     
     public Cell() {
-        SetOwner(' ');
+        Owner = ' ';
     }
     
     public bool IsSet(){

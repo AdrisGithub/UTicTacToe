@@ -10,15 +10,22 @@ namespace UltimateTicTacToe {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        private Cell[,] Board;
         
+        private Cell[,] Board;
+        private char currentMove;
+        private char[,] bigBoard;
+        private int[] nextPos;
         public MainWindow() {
             InitBoard();
+            InitComp();
             InitializeComponent();
-            //DrawBlock(6,3,'X');
-            //DrawBlock(4,3,'O');
         }
 
+        private void InitComp() {
+            nextPos = new[] { -1, -1 };
+            bigBoard = new char[3, 3];
+            currentMove = '0';
+        }
         private void InitBoard() {
             Board = new Cell[9, 9];
             for (int x = 0; x < Board.GetLength(0); x++) {
@@ -29,7 +36,6 @@ namespace UltimateTicTacToe {
         }
 
         private void DrawBlock(int xPos, int yPos, char owner) {
-            Label.Content += xPos + " " + yPos + " ";
             if (owner == 'X') {
                 Line leftTop = new Line {
                     Stroke = new SolidColorBrush(Colors.Black),
@@ -72,20 +78,28 @@ namespace UltimateTicTacToe {
                 Canvas.Children.Add(whiteCircle);
             }
         }
-        //Test Purpose
-        private bool didX;
 
         private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e) {
             var pos = e.GetPosition(sender as Grid);
             int x = (int)pos.X/100, y = (int)pos.Y/100;
-            if (didX) {
-                DrawBlock(x,y,'O');
-                didX = false;
+            if (!Board[x, y].IsSet() && IsValid(x/3,y/3)) {
+                changeCurrentMove();
+                DrawBlock(x,y,currentMove);
+                Board[x,y].SetOwner(currentMove);
+                nextPos[0] = x % 3;
+                nextPos[1] = y % 3;
             }
-            else {
-                DrawBlock(x,y,'X');
-                didX = true;
+        }
+
+        private bool IsValid(int x,int y) {
+            if ((nextPos[0] == x && nextPos[1] == y)||nextPos[0]==-1) {
+                return true;
             }
+            return false;
+        }
+
+        private void changeCurrentMove() {
+            currentMove = currentMove == 'O' ? 'X' : 'O';
         }
     }
 }
